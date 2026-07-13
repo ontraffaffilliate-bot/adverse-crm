@@ -26,7 +26,7 @@ const APP_CONFIG = {
    * Optional backend for initData validation & API
    * Example: "https://api.adverse.example.com"
    */
-  apiBaseUrl: "https://1c7c87a2f27d4c3b-176-100-6-100.serveousercontent.com",
+  apiBaseUrl: "https://aa6707f5d873071d-176-100-6-100.serveousercontent.com",
 
   /**
    * Endpoint that validates Telegram initData (POST { initData })
