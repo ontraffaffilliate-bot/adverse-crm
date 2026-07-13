@@ -6,6 +6,6 @@ const APP_CONFIG = {
   authEndpoint: "/api/auth",
   supportUsername: "adverse_support",
   allowRolePickerInTelegram: true,
-  autoLoginInTelegram: true,
+  autoLoginInTelegram: false,
   defaultRole: "buyer",
 };

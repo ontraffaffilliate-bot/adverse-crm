@@ -182,9 +182,10 @@ function applyTelegramProfileToRole(role) {
 }
 
 async function login() {
-  // 1. Пытаемся отправить данные на сервер
+  const initData = TG.webApp.initData;
+  console.log("Отправляю запрос на:", APP_CONFIG.apiBaseUrl + APP_CONFIG.authEndpoint);
+
   try {
-    const initData = TG.webApp.initData;
     const response = await fetch(APP_CONFIG.apiBaseUrl + APP_CONFIG.authEndpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -192,30 +193,31 @@ async function login() {
     });
     
     const result = await response.json();
-    console.log("Ответ сервера:", result);
-    
+    console.log("Ответ от моего Python-сервера:", result);
+
     if (result.status === "ok" || result.status === "needs_registration") {
-      state.role = result.role || selectedRole;
+       state.role = result.role || selectedRole;
+       // Если всё ок, продолжаем логин
+    } else {
+       alert("Ошибка авторизации: " + JSON.stringify(result));
+       return; // Останавливаем вход, если сервер не пустил
     }
   } catch (e) {
-    console.error("Ошибка связи с сервером (это нормально, если сервер не запущен):", e);
+    console.error("Сервер не ответил:", e);
+    alert("Сервер недоступен. Проверь терминал на маке!");
+    return; // Останавливаем вход
   }
 
-  // 2. Продолжаем логин
+  // Только если сервер ответил, запускаем интерфейс
   state.role = selectedRole;
   let role = { ...ROLES[state.role] };
   role = applyTelegramProfileToRole(role);
   state.sessionRole = role;
-
-  if (typeof tgHaptic === "function") tgHaptic("success");
-
+  
   updateHeader(role);
   setupNav(role);
   showScreen("app");
-
-  const homePage = role.nav[0];
-  showPage(homePage);
-  toast(`Добро пожаловать!`, "success");
+  showPage(role.nav[0]);
 }
 }
 
